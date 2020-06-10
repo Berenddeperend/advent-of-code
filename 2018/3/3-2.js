@@ -16,7 +16,6 @@ const parsedInput = input.map(item => {
   };
 });
 
-// console.log('parsedInput: ', parsedInput);
 
 const gridOccurences = parsedInput.reduce((acc, curr, i, src) => {
   for(let x = 0; x < curr.width; x++) {
@@ -33,23 +32,20 @@ const gridOccurences = parsedInput.reduce((acc, curr, i, src) => {
   return acc;
 }, {});
 
-// console.log('gridOccurences: ', gridOccurences);
+let idsOfMultiples = [
+...new Set(
+  Object
+  .values(gridOccurences)
+  .filter(ids => ids.length > 1)
+  .flatMap(ids => ids)
+  )
+];
 
-const winner = parsedInput.find(input => {
-  //for every input, return if it d
-  let occursInSharedSpace = true;
-  
-  Object.values(gridOccurences).forEach(pixel => {
-    if(pixel.length > 1 && pixel.includes(input.id)) {
-      occursInSharedSpace = false;
-    }
-  })
-  
-  return occursInSharedSpace;
-})
-
-
+const winner = parsedInput.filter(input => !idsOfMultiples.includes(input.id));
 console.log('winner: ', winner);
+
 console.timeEnd('runtime')
 
-//#1019, 266958.897ms
+//attempt 1 took 266958.897ms
+//attempt 2 took 323720.358ms
+//attempt 3 took 892.523ms
