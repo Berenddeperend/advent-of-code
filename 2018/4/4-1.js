@@ -1,7 +1,7 @@
 console.time('runtime');
 
 const fs = require('fs');
-const input = fs.readFileSync('./input.txt', 'utf8').split("\n");
+const input = fs.readFileSync('./input2.txt', 'utf8').split("\n");
 
 const parsedInput = input.map(entry => {
   const timestamp = entry.split("]")[0].split("[")[1];
@@ -10,17 +10,9 @@ const parsedInput = input.map(entry => {
   const [year, month, day] = date.split("-").map(string => Number(string));
   const log = entry.split("]")[1].trim();
 
-  return {
-    year,
-    month,
-    day,
-    log,
-    // time,
-    minuteStamp,
-    stupidDate: stupidAdd([year, month, day])
-  }
+  return { year, month, day, log, timestamp, minuteStamp}
 }).sort((a, b) => {
-  return stupidAdd([a.year, a.month, a.day]) - stupidAdd([b.year, b.month, b.day]);
+  return ('' + a.timestamp).localeCompare(b.timestamp);
 });
  
 // console.log('parsedInput: ', parsedInput);
@@ -29,26 +21,24 @@ const guards = [...new Set(parsedInput
   .filter(entry => entry.log.startsWith("Guard"))
   .map(entry => entry.log.split(" ")[1]))];
 
-  // console.log('guards: ', guards);
-  
-
+// console.log('guards: ', guards);
   
 const guardLog = guards.reduce((log, guard) => {
-  log[guard] = {
-    minutesAsleep: getMinutesAsleep(guard)
-  }
+  log[guard] = buildSleepMinuteLog(guard) 
   return log;
 }, {});
   
-console.log('guardLog: ', guardLog);
+// console.log('guardLog: ', guardLog);
 
 
-function getMinutesAsleep(guard) {
+
+
+function buildSleepMinuteLog(guard) {
   let guardOnDuty = false;
   let awake = false;
   let fellAsleepAt = null;
 
-  return parsedInput.reduce((minutes, entry) => {
+  return parsedInput.reduce((log, entry) => {
     if(entry.log === `Guard ${guard} begins shift`) {
       guardOnDuty = true;
     } else if (entry.log === "falls asleep") {
@@ -58,42 +48,60 @@ function getMinutesAsleep(guard) {
       }
     } else if (entry.log === "wakes up") {
       if(guardOnDuty) {
-        minutes += entry.minuteStamp - fellAsleepAt -1;
+
+        // console.log(`guard ${guard} fell asleep at ${fellAsleepAt} and woke up at ${entry.minuteStamp}`)
+
+        for (i = fellAsleepAt; i < entry.minuteStamp; i++) {
+          log[i] === undefined ? log[i] = 1 : log[i]++;
+        }
+
         fellAsleepAt = null;
         awake = true;
       }
     } else { //other guard begins
       guardOnDuty = false;
     }
-    return minutes;
-  }, 0)
+    return log;
+  }, {})
 };
 
-const sleepiestGuard = guards.reduce((sleepiestSoFar, guard) => {
-  if(sleepiestSoFar === null) return sleepiestSoFar = guard;
-  if(guardLog[guard].minutesAsleep > guardLog[sleepiestSoFar].minutesAsleep) {
-    return sleepiestSoFar = guard;
-  } 
-  return sleepiestSoFar;
-}, null);
+
+function getSleepiestGuard() { //lijkt het ook prima te doen
+  function totalMinutesAsleep(log) {
+    return Object.values(log).reduce((acc, curr) => acc + curr, 0)
+  }  
+  
+  
+  return guards.reduce((sleepiestSoFar, guard) => {
+    if(sleepiestSoFar === null) return sleepiestSoFar = guard;
+    if(totalMinutesAsleep(guardLog[guard]) > guardLog[sleepiestSoFar]) {
+      return sleepiestSoFar = guard;
+    } 
+    return sleepiestSoFar;
+  }, null);
+}
 
 
-function getSleepMinuteIndex(guard) {
-  let output = {}
-
-  function guardIsAsleepAtMinute(guard, minute) {
-    
+function multiplyIdWithTargetMinute(guard) { //works as intended
+  function mostAsleepAtMinute(log) {
+    return Object.keys(log).reduce((sleepiestMinute, currentMinute) => {
+      if(sleepiestMinute === null) {
+        sleepiestMinute = currentMinute;
+      } else {
+        if (log[currentMinute] > log[sleepiestMinute]) {
+          sleepiestMinute = currentMinute;
+        }
+      }
+      return sleepiestMinute;
+    }, null);
   }
 
-  for(let i = 0; i < 60; i ++) {
-
-  }
+  return parseInt(guard.split("#")[1]) * parseInt(mostAsleepAtMinute(guardLog[guard]));
 }
-console.log(getSleepMinuteIndex(sleepiestGuard));
 
 
-function stupidAdd(numbers){
-  return Number(numbers.map(number => String(number)).join(""))
-}
+const answer = multiplyIdWithTargetMinute(getSleepiestGuard());
+console.log('answer: ', answer);
+
 
 console.timeEnd('runtime') 
