@@ -1,7 +1,7 @@
 console.time('runtime');
 
 const fs = require('fs');
-const input = fs.readFileSync('./input2.txt', 'utf8').split("\n");
+const input = fs.readFileSync('./input.txt', 'utf8').split("\n");
 
 const parsedInput = input.map(entry => {
   const timestamp = entry.split("]")[0].split("[")[1];
@@ -28,10 +28,7 @@ const guardLog = guards.reduce((log, guard) => {
   return log;
 }, {});
   
-// console.log('guardLog: ', guardLog);
-
-
-
+console.log('guardLog: ', guardLog);
 
 function buildSleepMinuteLog(guard) {
   let guardOnDuty = false;
@@ -66,19 +63,22 @@ function buildSleepMinuteLog(guard) {
 };
 
 
-function getSleepiestGuard() { //lijkt het ook prima te doen
-  function totalMinutesAsleep(log) {
+function getSleepiestGuard() { //Deze gaat fout
+  function totalMinutesAsleep(log) { //deze is goed
     return Object.values(log).reduce((acc, curr) => acc + curr, 0)
   }  
   
-  
   return guards.reduce((sleepiestSoFar, guard) => {
-    if(sleepiestSoFar === null) return sleepiestSoFar = guard;
-    if(totalMinutesAsleep(guardLog[guard]) > guardLog[sleepiestSoFar]) {
+    if(sleepiestSoFar === null) {
+      sleepiestSoFar = guard;
+      return sleepiestSoFar;
+    }
+
+    if(totalMinutesAsleep(guardLog[guard]) > totalMinutesAsleep(guardLog[sleepiestSoFar])) {
       return sleepiestSoFar = guard;
     } 
     return sleepiestSoFar;
-  }, null);
+  }, null); 
 }
 
 
@@ -99,9 +99,6 @@ function multiplyIdWithTargetMinute(guard) { //works as intended
   return parseInt(guard.split("#")[1]) * parseInt(mostAsleepAtMinute(guardLog[guard]));
 }
 
-
 const answer = multiplyIdWithTargetMinute(getSleepiestGuard());
-console.log('answer: ', answer);
-
 
 console.timeEnd('runtime') 
