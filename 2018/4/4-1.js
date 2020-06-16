@@ -99,6 +99,24 @@ function multiplyIdWithTargetMinute(guard) { //works as intended
   return parseInt(guard.split("#")[1]) * parseInt(mostAsleepAtMinute(guardLog[guard]));
 }
 
+const sleepiestMinutuePerGuard = guards.map(guard => {
+  const tuple = Object.entries(guardLog[guard]).reduce((acc, curr) => {
+    if(acc === null) {
+      acc = curr;
+    } else {
+      if(curr[1] > acc[1]) {
+        acc = curr;
+      }
+    }
+    return acc
+  }, null);
+
+  return {
+    guard, tuple
+  }
+});
+
+console.log('sleepiestMinutuePerGuard: ', sleepiestMinutuePerGuard);
 const answer = multiplyIdWithTargetMinute(getSleepiestGuard());
 
 console.timeEnd('runtime') 
