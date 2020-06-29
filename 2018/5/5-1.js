@@ -1,44 +1,50 @@
 console.time("runtime");
 const fs = require("fs");
+
 const input = fs.readFileSync("./input.txt", "utf8").split("");
+// const input = "aAbcDdeftghdk".split("");
+
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
 const upperCases = alphabet.toUpperCase().split("");
 const lowerCases = alphabet.toLowerCase().split("");
 
-let answer = [...input];
+// let answer = loop([...input]);
 
-while (loop(answer)) {
-  answer = loop(answer);
+let answer = [...input];
+while (answer.length !== collapseStringOnce(answer).length) {
+  answer = collapseStringOnce(answer);
 }
 
-console.log(answer.join(""));
+console.log('answer: ', answer.length);
 
-function loop(arr) {
-  if(!Array.isArray(arr)) return false;
-  
-  let didWork = true;
+function collapseStringOnce(arr) { 
+  const copy = [...arr];
+  for (let i = 0; i < arr.length - 1; i++) {
+    let a = arr[i];
+    let b = arr[i + 1];
 
-  let output = arr.reduce((acc, curr, i) => {
-    const currAlphabetIndex = alphabet.indexOf(curr.toLowerCase());
-    const currCase = upperCases.includes(curr) ? "upper" : "lower";
-
-    if (
-      currCase === "lower" && arr[i + 1] === upperCases[currAlphabetIndex + 1] ||
-      currCase === "upper" && arr[i + 1] === lowerCases[currAlphabetIndex + 1]
-    
-    ) {
-      // if (
-      //   (upperCases.includes(curr[i]) && lowerCases.includes(curr[i + 1])) ||
-      //   (lowerCases.includes(curr[i]) && upperCases.includes(curr[i + 1]))
-      // ) {
-      // console.log("eyah"); 
-      acc.splice(i, 2);
-      didWork = true;
+    if (areSameLetters(a, b)) {
+      if(
+        (isLetterLowerCase(a) && isLetterUpperCase(b)) || 
+        (isLetterUpperCase(a) && isLetterLowerCase(b))
+      ) {
+        copy.splice(i, 2);
+        return copy;
+      }
     }
-    return acc;
-  }, arr);
+  }
+  return copy;
+}
 
-  return didWork ? output : false;
+function areSameLetters(a, b) {
+  return a.toLowerCase() === b.toLowerCase();
+}
+
+function isLetterUpperCase(letter) {
+  return upperCases.includes(letter);
+}
+function isLetterLowerCase(letter) {
+  return lowerCases.includes(letter);
 }
 
 console.timeEnd("runtime");
