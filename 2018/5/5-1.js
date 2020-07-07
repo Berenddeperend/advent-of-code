@@ -47,4 +47,7 @@ function isLetterLowerCase(letter) {
   return lowerCases.includes(letter);
 }
 
-console.timeEnd("runtime");
+console.timeEnd("runtime"); 
+
+//13359.806ms
+//3435.430ms minus duplicate array
