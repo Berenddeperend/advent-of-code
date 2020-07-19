@@ -8,18 +8,32 @@ const input: Coordinates[] = readFileStrSync("./input2.txt", {
   .map((pair) => {
     let [x, y] = pair.split(", ").map((coordinate) => Number(coordinate));
     return { x, y } as Coordinates;
-  })
-  .map(coordinate => {
-    coordinate.isInfinite = coordinateIsInfinite(coordinate)
-    return coordinate;
   });
 
 const xs = input.map((entry) => entry.x);
 const ys = input.map((entry) => entry.y);
+const minX = Math.min(...xs);
+const maxX = Math.max(...xs);
+const minY = Math.min(...ys);
+const maxY = Math.max(...ys);
 
-// console.log(input)
-function coordinateIsInfinite(coordinate: Coordinates) {
-  return true;
+/*
+  add 'isInfinte' property to input
+*/
+input.map((coordinate) => {
+  coordinate.isInfinite = coordinateIsInfinite(coordinate);
+  return coordinate;
+});
+
+console.log(input);
+
+function coordinateIsInfinite(coordinate: Coordinates): boolean {
+  return (
+    coordinate.x === minX ||
+    coordinate.x === maxX ||
+    coordinate.y === minY ||
+    coordinate.y === maxY
+  );
 }
 
 function createGrid(
@@ -44,15 +58,13 @@ function createGrid(
   return output;
 }
 
-let grid = createGridStringFromGrid(
-  createGrid(Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys))
-);
+let grid = createGridStringFromGrid(createGrid(minX, maxX, minY, maxY));
 
 function createGridStringFromGrid(grid: Grid): string {
   return grid.map((row) => row.join("")).join("\n");
 }
 
-// console.log(grid);
+console.log(grid);
 
 type Grid = string[][];
 
