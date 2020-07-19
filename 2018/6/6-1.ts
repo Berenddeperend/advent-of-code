@@ -5,9 +5,10 @@ const input: Coordinates[] = readFileStrSync("./input2.txt", {
   encoding: "utf8",
 })
   .split("\n")
-  .map((pair) => {
+  .map((pair, index) => {
     let [x, y] = pair.split(", ").map((coordinate) => Number(coordinate));
-    return { x, y } as Coordinates;
+
+    return { x, y, id: index } as Coordinates;
   });
 
 const xs = input.map((entry) => entry.x);
@@ -20,20 +21,28 @@ const maxY = Math.max(...ys);
 /*
   add 'isInfinte' property to input
 */
-input.map((coordinate) => {
-  coordinate.isInfinite = coordinateIsInfinite(coordinate);
-  return coordinate;
+input.map((coordinates) => {
+  coordinates.isInfinite = (
+    coordinates.x === minX ||
+    coordinates.x === maxX ||
+    coordinates.y === minY ||
+    coordinates.y === maxY
+  );
+  return coordinates;
 });
 
-console.log(input);
+const candidates = input
+.filter(coordinates => !coordinates.isInfinite)
+.reduce((acc: Area, curr): Area => {
+  acc[curr.id] = getAreaOfCoordinates(curr);
+  return acc;
+}, {})
 
-function coordinateIsInfinite(coordinate: Coordinates): boolean {
-  return (
-    coordinate.x === minX ||
-    coordinate.x === maxX ||
-    coordinate.y === minY ||
-    coordinate.y === maxY
-  );
+
+console.log('candidates: ', candidates);
+
+function getAreaOfCoordinates(coordinates: Coordinates):number {
+  return 2; //todo
 }
 
 function createGrid(
@@ -64,13 +73,17 @@ function createGridStringFromGrid(grid: Grid): string {
   return grid.map((row) => row.join("")).join("\n");
 }
 
-console.log(grid);
+// console.log(grid);
+
+
+
 
 type Grid = string[][];
-
+type Area = {[key:string]: number}
 interface Coordinates {
   x: number;
   y: number;
+  id: number;
   isInfinite?: boolean;
 }
 
