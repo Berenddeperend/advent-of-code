@@ -7,11 +7,20 @@ const input: Coordinates[] = readFileStrSync("./input2.txt", {
   .split("\n")
   .map((pair) => {
     let [x, y] = pair.split(", ").map((coordinate) => Number(coordinate));
-    return { x, y };
+    return { x, y } as Coordinates;
+  })
+  .map(coordinate => {
+    coordinate.isInfinite = coordinateIsInfinite(coordinate)
+    return coordinate;
   });
 
 const xs = input.map((entry) => entry.x);
 const ys = input.map((entry) => entry.y);
+
+// console.log(input)
+function coordinateIsInfinite(coordinate: Coordinates) {
+  return true;
+}
 
 function createGrid(
   fromX: number,
@@ -43,13 +52,14 @@ function createGridStringFromGrid(grid: Grid): string {
   return grid.map((row) => row.join("")).join("\n");
 }
 
-console.log(grid);
+// console.log(grid);
 
 type Grid = string[][];
 
 interface Coordinates {
   x: number;
   y: number;
+  isInfinite?: boolean;
 }
 
 console.timeEnd("runtime");
