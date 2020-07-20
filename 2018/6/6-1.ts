@@ -57,26 +57,26 @@ function createGrid( // also wrong
   let output: Grid = [];
 
   //create skeleton
-  for (let i = fromX, j = 0; i < toX + 1; i++, j++) {
+  for (let i = fromY, j = 0; i < toY + 1; i++, j++) {
     output.push([]);
-    for (let k = fromY, l = 0; k < toY + 1; k++, l++) {
+    for (let k = fromX, l = 0; k < toX + 1; k++, l++) {
       output[j].push(".");
     }
   }
 
   //Add coordinates
   input.forEach((coordinates) => {
-    output[coordinates.x - fromX][coordinates.y - fromY] = alphabet[coordinates.id].toUpperCase();
+    output[coordinates.y - fromY][coordinates.x - fromX] = alphabet[coordinates.id].toUpperCase();
   });
 
-  //calculate nearest coordinate for every point
-  // for (let i = fromX, j = 0; i < toX + 1; i++, j++) {
-  //   for (let k = fromY, l = 0; k < toY + 1; k++, l++) {
-  //     if(output[j][l] === ".") {
-  //       output[j][l] = closestCoordinateFromPoint(i, k);
-  //     }
-  //   }
-  // }
+  // calculate nearest coordinate for every point
+  for (let i = fromY, j = 0; i < toY + 1; i++, j++) {
+    for (let k = fromX, l = 0; k < toX + 1; k++, l++) {
+      if(output[j][l] === ".") {
+        output[j][l] = closestCoordinateFromPoint(i, k);
+      }
+    }
+  }
   return output;
 }
 
