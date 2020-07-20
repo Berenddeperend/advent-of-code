@@ -1,5 +1,6 @@
 console.time("runtime");
 import { readFileStrSync } from "https://deno.land/std@0.60.0/fs/read_file_str.ts";
+import { getDistanceBetweenTwoPoints } from "./fns.ts";
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -33,22 +34,7 @@ input.map((coordinates) => {
   return coordinates;
 });
 
-
-// const candidates = input
-// .filter(coordinates => !coordinates.isInfinite)
-// .reduce((acc: Area, curr): Area => {
-//   acc[curr.id] = getAreaOfCoordinates(curr);
-//   return acc;
-// }, {})
-
-
-// console.log('candidates: ', candidates);
-
-// function getAreaOfCoordinates(coordinates: Coordinates):number {
-//   return 2; //todo
-// }
-
-function createGrid( // also wrong
+function createGrid(
   fromX: number,
   toX: number,
   fromY: number,
@@ -82,25 +68,47 @@ function createGrid( // also wrong
 
 function closestCoordinateFromPoint(x:number, y:number):string {
   let isTie = false; //tie logic doesn't work yet
-  
-  const closest = input.reduce((closestCoordinateSoFar, curr):Coordinates => {
-    let distance = getDistanceBetweenTwoPoints(curr.x, curr.y, x, y)
-    let currentClosestDistance = getDistanceBetweenTwoPoints(closestCoordinateSoFar.x, closestCoordinateSoFar.y, x, y)
+  let closest: Coordinates | null = null;
+
+  input.forEach(coordinates => {
+    if(closest === null) {
+      closest = coordinates;
+    }
+    let distance = getDistanceBetweenTwoPoints(coordinates.x, coordinates.y, x, y)
+    let currentClosestDistance = getDistanceBetweenTwoPoints(closest.x, closest.y, x, y)
     if (distance === currentClosestDistance) {
       isTie = true;
+      closest = coordinates;
     }
     if (distance < currentClosestDistance){ 
-      closestCoordinateSoFar = curr;
+      closest = coordinates;
       isTie = false;
     }
-    return closestCoordinateSoFar
   });
 
-  return isTie ? "." : alphabet[closest.id];
-}
+  console.log(input)
 
-function getDistanceBetweenTwoPoints(x1:number, y1:number, x2:number, y2:number): number {
-  return Math.abs((Math.abs(x1) - Math.abs(x2))) + Math.abs((Math.abs(y1) - Math.abs(y2)));
+
+  // console.log('calculating for point ', x, y, alphabet[(closest as unknown as Coordinates).id])
+
+
+
+  // const closest = input.reduce((closestCoordinateSoFar, curr):Coordinates => {
+  //   let distance = getDistanceBetweenTwoPoints(curr.x, curr.y, x, y)
+  //   let currentClosestDistance = getDistanceBetweenTwoPoints(closestCoordinateSoFar.x, closestCoordinateSoFar.y, x, y)
+  //   if (distance === currentClosestDistance) {
+  //     isTie = true;
+  //   }
+  //   if (distance < currentClosestDistance){ 
+  //     closestCoordinateSoFar = curr;
+  //     isTie = false;
+  //   }
+  //   return closestCoordinateSoFar
+  // });
+
+  // // return "a"
+  // return isTie ? "." : alphabet[closest.id];
+  return alphabet[(closest as unknown as Coordinates).id]
 }
 
 let grid = createGridStringFromGrid(createGrid(minX, maxX, minY, maxY));
