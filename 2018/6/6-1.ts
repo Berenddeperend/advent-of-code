@@ -50,6 +50,7 @@ function createGrid(
     }
   }
 
+
   //Add coordinates
   input.forEach((coordinates) => {
     output[coordinates.y - fromY][coordinates.x - fromX] = alphabet[coordinates.id].toUpperCase();
@@ -59,7 +60,7 @@ function createGrid(
   for (let i = fromY, j = 0; i < toY + 1; i++, j++) {
     for (let k = fromX, l = 0; k < toX + 1; k++, l++) {
       if(output[j][l] === ".") {
-        output[j][l] = closestCoordinateFromPoint(i, k);
+        output[j][l] = closestCoordinateFromPoint(k, i);
       }
     }
   }
@@ -71,13 +72,19 @@ function closestCoordinateFromPoint(x:number, y:number):string {
   let closest: Coordinates | null = null;
 
   input.forEach(coordinates => {
+    let wasFirst = false;
+
     if(closest === null) {
       closest = coordinates;
+      wasFirst = true;
     }
     let distance = getDistanceBetweenTwoPoints(coordinates.x, coordinates.y, x, y)
     let currentClosestDistance = getDistanceBetweenTwoPoints(closest.x, closest.y, x, y)
+    
     if (distance === currentClosestDistance) {
-      isTie = true;
+      if(!wasFirst) {
+        isTie = true;
+      }
       closest = coordinates;
     }
     if (distance < currentClosestDistance){ 
@@ -86,29 +93,9 @@ function closestCoordinateFromPoint(x:number, y:number):string {
     }
   });
 
-  console.log(input)
+  const letter = alphabet[(closest as unknown as Coordinates).id];
 
-
-  // console.log('calculating for point ', x, y, alphabet[(closest as unknown as Coordinates).id])
-
-
-
-  // const closest = input.reduce((closestCoordinateSoFar, curr):Coordinates => {
-  //   let distance = getDistanceBetweenTwoPoints(curr.x, curr.y, x, y)
-  //   let currentClosestDistance = getDistanceBetweenTwoPoints(closestCoordinateSoFar.x, closestCoordinateSoFar.y, x, y)
-  //   if (distance === currentClosestDistance) {
-  //     isTie = true;
-  //   }
-  //   if (distance < currentClosestDistance){ 
-  //     closestCoordinateSoFar = curr;
-  //     isTie = false;
-  //   }
-  //   return closestCoordinateSoFar
-  // });
-
-  // // return "a"
-  // return isTie ? "." : alphabet[closest.id];
-  return alphabet[(closest as unknown as Coordinates).id]
+  return isTie ? '.' : letter;
 }
 
 let grid = createGridStringFromGrid(createGrid(minX, maxX, minY, maxY));
