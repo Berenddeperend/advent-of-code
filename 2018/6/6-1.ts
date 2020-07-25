@@ -10,7 +10,6 @@ const input: Coordinates[] = readFileStrSync("./input.txt", {
   .split("\n")
   .map((pair, index) => {
     let [x, y] = pair.split(", ").map((coordinate) => Number(coordinate));
-
     return { x, y, id: index } as Coordinates;
   });
 
@@ -52,8 +51,8 @@ function createGrid(
 
   //Add coordinates
   input.forEach((coordinates) => {
-    output[coordinates.y - fromY][coordinates.x - fromX] =
-    coordinates.id.toString();
+    output[coordinates.y - fromY][coordinates.x - fromX] = coordinates.id
+      .toString();
   });
 
   // calculate nearest coordinate for every point
@@ -117,23 +116,18 @@ function createGridStringFromGrid(grid: Grid): string {
 }
 const occurences: object = grid.reduce(
   (acc: { [key: string]: number }, curr: string) => {
-    if(curr === '.') return acc;
-    if(input[parseInt(curr)].isInfinite) return acc;
-    if (acc.hasOwnProperty(curr)) {
-      acc[curr]++;
-    } else {
-      acc[curr] = 1;
-    }
+    if (curr === "." || input[parseInt(curr)].isInfinite) return acc;
+    acc.hasOwnProperty(curr) ? acc[curr]++ : acc[curr] = 1;
     return acc;
   },
   {},
 );
 
 const most = Math.max(...Object.values(occurences));
-console.log(occurences)
-console.log('occurences length:', Object.keys(occurences).length)
-console.log(input)
-console.log('most: ', most);
+console.log(occurences);
+console.log("occurences length:", Object.keys(occurences).length);
+console.log(input);
+console.log("most: ", most);
 
 type Grid = string[][];
 // type Area = {[key:string]: number}
