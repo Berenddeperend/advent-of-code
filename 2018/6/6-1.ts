@@ -33,6 +33,7 @@ input.map((coordinates) => {
   return coordinates;
 });
 
+
 function createGrid(
   fromX: number,
   toX: number,
@@ -108,7 +109,7 @@ function closestCoordinateFromPoint(x: number, y: number): string {
   return isTie ? "." : letter;
 }
 
-// let grid = createGridStringFromGrid(createGrid(minX, maxX, minY, maxY));
+let visualGrid = createGridStringFromGrid(createGrid(minX, maxX, minY, maxY));
 let grid = createGrid(minX, maxX, minY, maxY).flat();
 
 function createGridStringFromGrid(grid: Grid): string {
@@ -123,14 +124,14 @@ const occurences: object = grid.reduce(
   {},
 );
 
-const most = Math.max(...Object.values(occurences));
-console.log(occurences);
-console.log("occurences length:", Object.keys(occurences).length);
-console.log(input);
+const most:number = Math.max(...Object.values(occurences));
+// console.log(occurences);
+// console.log("occurences length:", Object.keys(occurences).length);
+// console.log(input);
 console.log("most: ", most);
+// console.log(visualGrid);
 
 type Grid = string[][];
-// type Area = {[key:string]: number}
 interface Coordinates {
   x: number;
   y: number;
