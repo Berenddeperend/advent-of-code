@@ -7,11 +7,11 @@ const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 const input: Coordinates[] = readFileStrSync("./input.txt", {
   encoding: "utf8",
 })
-  .split("\n")
-  .map((pair, index) => {
-    let [x, y] = pair.split(", ").map((coordinate) => Number(coordinate));
-    return { x, y, id: index } as Coordinates;
-  });
+.split("\n")
+.map((pair, index) => { 
+  let [x, y] = pair.split(", ").map((coordinate) => Number(coordinate));
+  return { x, y, id: index } as Coordinates;
+});
 
 const xs = input.map((entry) => entry.x);
 const ys = input.map((entry) => entry.y);
@@ -19,20 +19,6 @@ const minX = Math.min(...xs);
 const maxX = Math.max(...xs);
 const minY = Math.min(...ys);
 const maxY = Math.max(...ys);
-
-/*
-  add 'isInfinte' property to input
-*/
-input.map((coordinates) => {
-  coordinates.isInfinite = (
-    coordinates.x === minX ||
-    coordinates.x === maxX ||
-    coordinates.y === minY ||
-    coordinates.y === maxY
-  );
-  return coordinates;
-});
-
 
 function createGrid(
   fromX: number,
@@ -109,27 +95,42 @@ function closestCoordinateFromPoint(x: number, y: number): string {
   return isTie ? "." : letter;
 }
 
-let visualGrid = createGridStringFromGrid(createGrid(minX, maxX, minY, maxY));
-let grid = createGrid(minX, maxX, minY, maxY).flat();
-
-function createGridStringFromGrid(grid: Grid): string {
-  return grid.map((row) => row.join("")).join("\n");
+function getOccurrences(grid:Grid, filters?:string[]): Occurrences {
+  return grid.flat().reduce(
+    (acc: Occurrences, curr: string) => {
+      // if (curr === "." || input[parseInt(curr)].isInfinite) return acc;
+      if(curr === ".") return acc;
+      if(filters) {
+        if(filters.includes(curr)) return acc;
+      }
+      acc.hasOwnProperty(curr) ? acc[curr]++ : acc[curr] = 1;
+      return acc;
+    },
+    {},
+  );
 }
-const occurences: object = grid.reduce(
-  (acc: { [key: string]: number }, curr: string) => {
-    if (curr === "." || input[parseInt(curr)].isInfinite) return acc;
-    acc.hasOwnProperty(curr) ? acc[curr]++ : acc[curr] = 1;
-    return acc;
-  },
-  {},
-);
 
-const most:number = Math.max(...Object.values(occurences));
-// console.log(occurences);
-// console.log("occurences length:", Object.keys(occurences).length);
-// console.log(input);
-console.log("most: ", most);
-// console.log(visualGrid);
+function findInfinites(occurrences1:Occurrences, occurrences2:Occurrences): string[] {
+  const occurrences2Entries = Object.entries(occurrences2);
+  return Object.entries(occurrences1).reduce((acc:string[], curr, index) => {
+    if(curr[1] !== occurrences2Entries[index][1]) {
+      acc.push(curr[0]);
+    }
+    return acc;
+  }, [])
+}
+
+const baseGrid = createGrid(minX, maxX, minY, maxY);
+const extendedGrid = createGrid(minX - 1, maxX + 1, minY - 1, maxY + 1);
+const baseGridOccurrences = getOccurrences(baseGrid);
+const extendedGridOccurrences = getOccurrences(extendedGrid);
+
+const infinites = findInfinites(baseGridOccurrences, extendedGridOccurrences);
+
+const occurrencesMinusInfinites = getOccurrences(baseGrid, infinites);
+
+const most:number = Math.max(...Object.values(occurrencesMinusInfinites));
+console.log('most: ', most);
 
 type Grid = string[][];
 interface Coordinates {
@@ -138,5 +139,7 @@ interface Coordinates {
   id: number;
   isInfinite?: boolean;
 }
+type Occurrences = { [key:string]:number };
 
 console.timeEnd("runtime");
+//198ms
