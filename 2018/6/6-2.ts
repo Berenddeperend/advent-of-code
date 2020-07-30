@@ -2,7 +2,7 @@ console.time("runtime");
 import { readFileStrSync } from "https://deno.land/std@0.60.0/fs/read_file_str.ts";
 import { getDistanceBetweenTwoPoints } from "./fns.ts";
 
-const input: Coordinates[] = readFileStrSync("./input2.txt", {
+const input: Coordinates[] = readFileStrSync("./input.txt", {
   encoding: "utf8",
 })
   .split("\n")
@@ -11,8 +11,8 @@ const input: Coordinates[] = readFileStrSync("./input2.txt", {
     return { x, y, id: index } as Coordinates;
   });
 
-const treshold = 32;
-// const treshold = 10000;
+// const treshold = 32;
+const treshold = 10000;
 
 const xs = input.map((entry) => entry.x);
 const ys = input.map((entry) => entry.y);
@@ -128,7 +128,7 @@ function getDistancesFromPointToCoordinates(x: number, y: number): number {
 }
 
 const baseGrid = createGrid(minX, maxX, minY, maxY);
-const extendedGrid = createGrid(minX - 1, maxX + 1, minY - 1, maxY + 1);
+const extendedGrid = createGrid(minX - 500, maxX + 500, minY - 500, maxY + 500);
 const baseGridOccurrences = getOccurrences(baseGrid);
 const extendedGridOccurrences = getOccurrences(extendedGrid);
 const infinites = findInfinites(baseGridOccurrences, extendedGridOccurrences);
@@ -140,15 +140,13 @@ const nonInfinitePoints = input.filter((coordinates) => {
     );
   });
 
-const distances = baseGrid.map((y, yIndex) => {
+const distances = extendedGrid.map((y, yIndex) => {
   return y.map((x, xIndex) => {
-    return input.reduce((acc, curr) => {
-      return acc + getDistanceBetweenTwoPoints(xIndex, yIndex, curr.x, curr.y);
-    }, 0);
+    return getDistancesFromPointToCoordinates(xIndex, yIndex);
   });
-})//.flat().filter((distance) => distance < treshold).length;
+}).flat().filter((distance) => distance < treshold).length;
 
-console.log(distances);
+console.log(distances);  // 39624 is incorrect,  44868 maybe
 
 type Grid = string[][];
 interface Coordinates {
