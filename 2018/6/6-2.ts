@@ -158,4 +158,4 @@ interface Coordinates {
 type Occurrences = { [key: string]: number };
 
 console.timeEnd("runtime");
-//198ms
+//2268ms
