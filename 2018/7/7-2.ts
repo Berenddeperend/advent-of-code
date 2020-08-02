@@ -9,6 +9,13 @@ const input = readFileStrSync(testMode ? "./input-sample.txt" : "./input.txt", {
   .split("\n")
   .map(parseLine);
 
+
+function secondsItTakesToCompleteStep(step:string):number {
+  const alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split('');
+  const base = testMode ? 0 : 60;
+  return base + alphabet.indexOf(step) + 1;
+}
+
 function buildOrderString(tuples: string[][]) {
   const outcome: string[] = [];
   const copiedTuples = [...tuples];
