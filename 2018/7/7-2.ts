@@ -30,9 +30,7 @@ function buildOrderString(tuples: string[][]) {
     {}
   );
 
-  const dependants = [...new Set(Object.values(requirementLog).flat())];
-  const dependencies = [...new Set(Object.keys(requirementLog).flat())];
-  const allSteps = [...new Set([...dependencies, ...dependants])];
+  const allSteps = [...new Set(Object.entries(requirementLog).flat(2))]; //would prefer flat(infinity) but TS is capped at 7. https://github.com/microsoft/TypeScript/blob/7cc4a8df9482ffdfa6b3500a009c0454681d5f4b/src/lib/es2019.array.d.ts#L132-L138
 
   function dependenciesHaveBeenMet(step: string): boolean {
     debugger;
