@@ -16,8 +16,9 @@ function secondsItTakesToCompleteStep(step:string):number {
   return base + alphabet.indexOf(step) + 1;
 }
 
-function buildOrderString(tuples: string[][]) {
-  const outcome: string[] = [];
+function buildReport(tuples: string[][]) {
+  const finishedSteps: string[] = [];
+  const outcome: { [youWorkOn:string]:string  } = [];
   const copiedTuples = [...tuples];
 
   const requirementLog: RequirementLog = copiedTuples.reduce(
@@ -28,31 +29,23 @@ function buildOrderString(tuples: string[][]) {
       return acc;
     },
     {}
-  );
+  ); 
 
-  const allSteps = [...new Set(Object.entries(requirementLog).flat(2))]; //would prefer flat(infinity) but TS is capped at 7. https://github.com/microsoft/TypeScript/blob/7cc4a8df9482ffdfa6b3500a009c0454681d5f4b/src/lib/es2019.array.d.ts#L132-L138
+  const allSteps = [...new Set(Object.entries(requirementLog).flat(7))]; //would prefer flat(infinity) but TS is capped at 7. https://github.com/microsoft/TypeScript/blob/7cc4a8df9482ffdfa6b3500a009c0454681d5f4b/src/lib/es2019.array.d.ts#L132-L138
 
   function dependenciesHaveBeenMet(step: string): boolean {
     debugger;
     if (!requirementLog.hasOwnProperty(step)) return true;
     return requirementLog[step].every((dependant) =>
-      outcome.includes(dependant)
+      finishedSteps.includes(dependant)
     );
   }
 
-  while (outcome.length < allSteps.length) {
-    outcome.push(
-      allSteps
-        .filter((step) => !outcome.includes(step)) //only steps that haven't been placed
-        .filter(dependenciesHaveBeenMet) //and steps who no longer have dependencies
-        .sort()[0] //if still multiple left, pick the first one alphabetically
-    );
-  }
 
-  return outcome.join("");
+  // return outcome.join("");
 }
 
-const output = buildOrderString(input);
+const output = buildReport(input);
 console.log("output: ", output);
 
 function parseLine(line: string) {
@@ -60,5 +53,10 @@ function parseLine(line: string) {
 }
 
 type RequirementLog = { [dependency: string]: string[] };
+interface raportBySecond {
+  second: number,
+  workers: string[][],
+ 
+}
 
 console.timeEnd("runtime"); //3ms
