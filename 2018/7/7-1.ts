@@ -16,19 +16,20 @@ function buildOrderString(tuples: string[][]) {
   const requirementLog: RequirementLog = copiedTuples.reduce(
     (acc: RequirementLog, curr) => {
       acc.hasOwnProperty(curr[1])
-        ? acc[curr[1]].push(curr[0])
-        : (acc[curr[1]] = [curr[0]]);
+      ? acc[curr[1]].push(curr[0])
+      : (acc[curr[1]] = [curr[0]]);
       return acc;
     },
     {}
-  );
+    );
+    console.log('requirementLog: ', requirementLog);
 
   const allSteps = [...new Set(Object.entries(requirementLog).flat(2))]; //would prefer flat(infinity) but TS is capped at 7. https://github.com/microsoft/TypeScript/blob/7cc4a8df9482ffdfa6b3500a009c0454681d5f4b/src/lib/es2019.array.d.ts#L132-L138
 
   function dependenciesHaveBeenMet(step: string): boolean {
     if (!requirementLog.hasOwnProperty(step)) return true;
-    return requirementLog[step].every((dependant) =>
-      outcome.includes(dependant)
+    return requirementLog[step].every((dependency) =>
+      outcome.includes(dependency)
     );
   }
 
@@ -51,6 +52,6 @@ function parseLine(line: string) {
   return [line[5], line[36]];
 }
 
-type RequirementLog = { [dependency: string]: string[] };
+type RequirementLog = { [dependant: string]: string[] }; // {dependant: [dependency, dependency]}
 
 console.timeEnd("runtime"); //3ms
