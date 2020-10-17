@@ -22,7 +22,7 @@ function downTheRabbitHole(
   workArray: number[],
   iterationId: number
 ): number | void {
-  debugger;
+  // debugger;
   const childNodesCount = workArray[0];
   const metaEntriesCount = workArray[1];
 
@@ -50,9 +50,10 @@ function downTheRabbitHole(
 
     // add own metadata
     let metadatas: number[] = [];
+    targetIndex++;
     for (let i = 0; i < metaEntriesCount; i++) {
-      targetIndex++;
       metadatas.push(workArray[targetIndex]);
+      targetIndex++;
     } 
     raport[iterationId] = metadatas;
     return targetIndex; //almost!
