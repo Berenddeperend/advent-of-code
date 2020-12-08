@@ -5,16 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-node",
+      "name": "Launch Deno",
       "request": "launch",
-      "name": "Launch Program",
-      "skipFiles": [
-        "<node_internals>/**"
+      "type": "pwa-node",
+      "program": "9/9-1.ts",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": [
+        "run",
+        "--inspect-brk",
+        "--allow-all"
       ],
-      "program": "${workspaceFolder}/2020/1/1-1.ts",
-      "outFiles": [
-        "${workspaceFolder}/**/*.js"
-      ]
+      "attachSimplePort": 9229
     }
   ]
 }

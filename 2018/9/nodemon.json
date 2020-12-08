@@ -1,0 +1,4 @@
+{
+  "watch": ["9-1.ts"],
+  "exec": "ts-node ./9-1.ts"
+}
