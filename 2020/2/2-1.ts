@@ -10,21 +10,16 @@ function isValid(entry:string):boolean {
   const subject = entry.split(" ")[2];
 
   const occurrences = Array.from(subject).reduce((acc, curr) => {
-    if(curr === letter) {
-      acc++;
-    }
-    return acc;
+    return curr === letter ? ++acc : acc
   }, 0);
 
   return occurrences >= min && occurrences <= max;
 }
 
 const answer = input.reduce((acc, curr) => {
-  if(isValid(curr)) {
-    acc ++;
-  }
-  return acc;
+  return isValid(curr) ? ++acc : acc; 
 }, 0);
+
 console.log('answer: ', answer);
 
 console.timeEnd("runtime");
