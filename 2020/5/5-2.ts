@@ -1,4 +1,5 @@
 console.time("runtime");
+import { ifError } from "assert";
 import { readFileSync } from "fs";
 
 let testMode = false;
@@ -10,14 +11,16 @@ const columns = 8;
 const rowSpecifiers = 7;
 const columnSpecifiers = 3;
 
+let filtered = 0;
+
 const tickets = input
   .map((boardingPass) => {
-    if (
-      boardingPass.startsWith("FFF") ||
-      boardingPass.startsWith("BBB")
-    ) {
-      return null;
-    }
+    // if (
+    //   boardingPass.startsWith("FFF") ||
+    //   boardingPass.startsWith("BBB")
+    // ) {
+    //   return null;
+    // }
 
     let divider = 128;
     let minRow = 0;
@@ -43,15 +46,24 @@ const tickets = input
       }
     }
 
+    if(minRow === 1 ) {
+      console.log('yeah')
+    }
+
     return minRow * 8 + minColumn;
   })
-  .filter((pass) => pass !== null)
-  .sort((a, b) => a - b)
-  .filter((pass, index, all) => {
-    return all[index-1]+1 === pass && all[index+1]-1 === pass;
+  .filter((pass) =>  {
+    if(pass == null) filtered++;
+   return pass !== null;
   })
+  // .sort((a, b) => a - b)
+  // .filter((pass, index, all) => {
+  //   return all[index-1]+1 === pass && all[index+1]-1 === pass;
+  // })
   ;
 
-console.log(tickets);
+console.log('filtered: ', filtered);
+
+// console.log(tickets.length);
 
 console.timeEnd("runtime");
