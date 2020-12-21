@@ -1,7 +1,7 @@
 console.time("runtime");
 import { readFileSync } from "fs";
 
-const input = readFileSync("./7/input-sample.txt", "utf8").split("\n");
+const input = readFileSync("./7/input.txt", "utf8").split("\n");
 
 type rule = {
   bagName: string;
@@ -29,6 +29,21 @@ function parser(line: string): rule {
 
 const bags = input.map(parser);
 
+const memoize = (fn) => {
+  let cache = {};
+  return (...args) => {
+    let n = args[0];
+    if (n in cache) {
+      return cache[n];
+    }
+    else {
+      let result = fn(n);
+      cache[n] = result;
+      return result;
+    }
+  }
+}
+
 function addObjs(objA, objB) {
   const objC = { ...objA };
   Object.entries(objB).map((tuple) => {
@@ -39,10 +54,11 @@ function addObjs(objA, objB) {
 
   return objC;
 }
+let iterations = 0;
 
-function downTheRabbitHole(bagName: string) { //todo: not string but obj as argument
+const downTheRabbitHole = memoize((bagName: string) => {
+  iterations++;
   let mapping = {};
-
   bags
     .find((bag) => bag.bagName === bagName)
     .contains.map((bag) => {
@@ -56,7 +72,8 @@ function downTheRabbitHole(bagName: string) { //todo: not string but obj as argu
     });
 
   return mapping;
-}
+})
+
 
 const answer = bags.reduce((BagsWithTargetBag, bag) => {
   return Object.keys(downTheRabbitHole(bag.bagName)).includes("shiny gold")
@@ -64,7 +81,6 @@ const answer = bags.reduce((BagsWithTargetBag, bag) => {
     : BagsWithTargetBag;
 }, 0);
 
-// const answer = downTheRabbitHole("shiny gold");
 console.log(answer)
 
 console.timeEnd("runtime");
