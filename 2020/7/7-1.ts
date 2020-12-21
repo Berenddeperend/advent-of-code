@@ -29,26 +29,42 @@ function parser(line: string): rule {
 
 const bags = input.map(parser);
 
-function downTheRabbitHole(bagName: string) {
-  const mapping = {}
+function addObjs(objA, objB) {
+  const objC = { ...objA };
+  Object.entries(objB).map((tuple) => {
+    objC.hasOwnProperty(tuple[0])
+      ? (objC[tuple[0]] += tuple[1])
+      : (objC[tuple[0]] = tuple[1]);
+  });
+
+  return objC;
+}
+
+function downTheRabbitHole(bagName: string) { //todo: not string but obj as argument
+  let mapping = {};
 
   bags
     .find((bag) => bag.bagName === bagName)
     .contains.map((bag) => {
-      for(let i=0; i < bag.quantity; i++) {
-        mapping.hasOwnProperty(bag.target) ? 
-          mapping[bag.target] ++ :
-          mapping[bag.target] = 1
+      for (let i = 0; i < bag.quantity; i++) {
+        mapping.hasOwnProperty(bag.target)
+          ? mapping[bag.target]++
+          : (mapping[bag.target] = 1);
 
-        downTheRabbitHole(bag.target)
+        mapping = addObjs(mapping, downTheRabbitHole(bag.target));
       }
     });
 
-    return mapping;
+  return mapping;
 }
 
-const answer = downTheRabbitHole("shiny gold");
+const answer = bags.reduce((BagsWithTargetBag, bag) => {
+  return Object.keys(downTheRabbitHole(bag.bagName)).includes("shiny gold")
+    ? ++BagsWithTargetBag
+    : BagsWithTargetBag;
+}, 0);
 
+// const answer = downTheRabbitHole("shiny gold");
 console.log(answer)
 
 console.timeEnd("runtime");
