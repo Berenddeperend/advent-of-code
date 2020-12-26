@@ -1,7 +1,7 @@
 console.time("runtime");
 import { readFileSync } from "fs";
 
-const input = readFileSync("2020/11/input-sample.txt", "utf8")
+const input = readFileSync("2020/11/input.txt", "utf8")
   .split("\n")
   .map((s) => s.split(""));
 
@@ -28,9 +28,9 @@ function findNextStateForPos(x: number, y: number, grid: string[][]) {
     return targetSeat === "#";
   });
 
-  if (takenAdjSeats.length === 0) {
+  if (grid[y][x] === "L" && takenAdjSeats.length === 0) {
     return "#";
-  } else if (takenAdjSeats.length >= 4) {
+  } else if (grid[y][x] === "#" && takenAdjSeats.length >= 4) {
     return "L";
   } else {
     return grid[y][x];
@@ -49,11 +49,9 @@ function generateNextGrid(grid: string[][]) {
 }
 
 while (flattenGrid(currentGrid) !== flattenGrid(nextGrid)) {
-  console.count('iteration')
   currentGrid = nextGrid;
   nextGrid = generateNextGrid(currentGrid);
 }
-
 const answer = currentGrid.flat().filter((seat) => seat === "#").length;
 console.log("answer: ", answer);
 
