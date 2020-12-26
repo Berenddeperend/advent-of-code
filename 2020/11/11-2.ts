@@ -47,7 +47,6 @@ function findNextStateForPos(x: number, y: number, grid: string[][]) {
     }
   });
 
-
   if (grid[y][x] === "L" && takenAdjSeats.length === 0) {
     return "#";
   } else if (grid[y][x] === "#" && takenAdjSeats.length >= 5) {
