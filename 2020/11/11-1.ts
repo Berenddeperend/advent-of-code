@@ -1,7 +1,7 @@
 console.time("runtime");
 import { readFileSync } from "fs";
 
-const input = readFileSync("2020/11/input.txt", "utf8")
+const input = readFileSync("2020/11/input-sample.txt", "utf8")
   .split("\n")
   .map((s) => s.split(""));
 
@@ -54,7 +54,7 @@ while (flattenGrid(currentGrid) !== flattenGrid(nextGrid)) {
   nextGrid = generateNextGrid(currentGrid);
 }
 
-const answer = nextGrid.flat().filter((seat) => seat === "#").length;
+const answer = currentGrid.flat().filter((seat) => seat === "#").length;
 console.log("answer: ", answer);
 
 console.timeEnd("runtime");
