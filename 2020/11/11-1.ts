@@ -1,7 +1,7 @@
 console.time("runtime");
 import { readFileSync } from "fs";
 
-const input = readFileSync("./11/input-sample.txt", "utf8")
+const input = readFileSync("2020/11/input.txt", "utf8")
   .split("\n")
   .map((s) => s.split(""));
 
@@ -49,7 +49,7 @@ function generateNextGrid(grid: string[][]) {
 }
 
 while (flattenGrid(currentGrid) !== flattenGrid(nextGrid)) {
-  // console.count("iteratie");
+  console.count('iteration')
   currentGrid = nextGrid;
   nextGrid = generateNextGrid(currentGrid);
 }
