@@ -1,26 +1,26 @@
 console.time("runtime");
 import { readFileSync } from "fs";
+import * as lcm from 'compute-lcm';
 
 const [target, input] = readFileSync("2020/13/input-sample.txt", "utf8").split(
   "\n"
-  );
+);
+
+let xes = 0
 
 const busses = input
   .split(",")
-  .filter((d) => d !== "x")
+  // .reduce((acc,curr,index) => {
+  //   if(curr === 'x') {
+  //     xes++;
+  //     return acc;
+  //   }
+  //   acc.push(parseInt(curr) + index)
+  //   return acc;
+  // }, [])
+  .filter(d => d !== "x")
   .map(d => parseInt(d))
-  .map((d) => {
-    return {
-      id: d,
-      // difference: getDifference(parseInt(target), parseInt(d))
-      difference: d - parseInt(target) % d
-    }
-  })
-  .sort((a, b) => a.difference - b.difference)
 
-  console.log(busses)
-
-
-console.log(busses[0].difference * busses[0].id);
+  console.log(busses, lcm(busses))
 
 console.timeEnd("runtime");

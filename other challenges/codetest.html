@@ -1,0 +1,58 @@
+<html>
+  <head></head>
+  <body>
+    columns:
+    <input
+      type="number"
+      class="input columns"
+      placeholder="columns"
+      value="3"
+    />
+    rows:
+    <input type="number" class="input rows" placeholder="rows" value="5" />
+
+    <button onclick="logTable()">Print table</button>
+
+    <script>
+      const columnsInput = document.querySelector(".columns");
+      const rowsInput = document.querySelector(".rows");
+
+      function logTable() {
+        const rawTable = [];
+        let counter = 0;
+        for (let i = 0; i < rowsInput.value; i++) {
+          rawTable.push([]);
+          for (let j = 0; j < columnsInput.value; j++) {
+            rawTable[i].push(++counter);
+          }
+
+          if ((i + 1) % 2 === 0) {
+            rawTable[i].reverse();
+          }
+        }
+
+        const output = pivot2DArr(rawTable).map(d => d.reverse());
+
+        console.table(output);
+      }
+
+      function pivot2DArr(src) {
+        let output = [];
+        for (let i = 0; i < src[0].length; i++) {
+          //prepare new rows
+          output.push([]);
+        }
+
+        for (let [rowIndex, row] of src.entries()) {
+          for (let [cellIndex, cell] of row.entries()) {
+            output[cellIndex][src.length - 1 - rowIndex] = cell;
+          }
+        }
+
+        return output;
+      }
+
+      logTable();
+    </script>
+  </body>
+</html>
