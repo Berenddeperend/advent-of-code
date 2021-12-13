@@ -1,9 +1,9 @@
 console.time("runtime");
 const fs = require("fs");
 const input = fs
-  .readFileSync("./input-sample.txt", "utf8")
+  .readFileSync("./input.txt", "utf8")
   .split("\n")
-  .map((line) => line.match(/(\d,\d)/g));
+  .map((line) => line.match(/(\d+,\d+)/g));
 
 function parseLine(line) {
   const [from, to] = line;
@@ -15,10 +15,10 @@ function parseLine(line) {
 
 const noDiagonals = input.filter((line) => {
     const { fromX, fromY, toX, toY } = parseLine(line);
-    return fromX === toX || fromY === toY;
+  return fromX === toX || fromY === toY;
 });
 
-
+console.log(noDiagonals)
 
 function logGrid(grid) {
   console.log(
@@ -54,11 +54,9 @@ function createGrid(lines) {
 }
 
 let grid = createGrid(noDiagonals);
-console.log('grid: ', grid.length);
 
 noDiagonals.map((line) => {
   const c = parseLine(line); //c for coordinates
-
   const dir = c.fromY === c.toY ? "X" : "Y";
   const reverse = c.fromY > c.toY || c.fromX > c.toX;
 
@@ -73,9 +71,11 @@ noDiagonals.map((line) => {
   }
 });
 
-logGrid(grid);
 
-// console.log(grid.flat())
+const deadlySpotsCount = grid.flat().reduce((acc, curr, i) => {
+  return curr >= 2 ? ++acc : acc;
+}, 0);
 
-// console.log("input: ", input);
+console.log("deadlySpotsCount: ", deadlySpotsCount);
+
 console.timeEnd("runtime");
