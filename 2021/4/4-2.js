@@ -33,24 +33,46 @@ function isBingo(card, numbers) {
   return verticalMatch || horizontalMatch;
 }
 
+// find losing card. 
+// const losingCard = bingoCards.reduce((bingoedCards, card, cardIndex) => {
+//   if(bingoedCards.length === bingoCards.length) return bingoedCards;
+
+//   drawnNumbers.map((drawnNumber, drawnNumberIndex) => {
+//     return 
+//   })
+
+// },[])
+
+
+const losingCardIndex = drawnNumbers.reduce((bingoedCards, drawnNumber, drawnNumberIndex) => {
+  if(bingoedCards.length === bingoCards.length) return bingoedCards;
+  
+  bingoCards.map((bingoCard, bingoCardIndex) => {
+    if(bingoedCards.includes(bingoCardIndex)) return;
+    if(isBingo(bingoCard, drawnNumbers.slice(0, drawnNumberIndex + 1))) {
+      bingoedCards.push(bingoCardIndex)
+    }
+  })
+
+  return bingoedCards;
+
+}, [])[bingoCards.length -1]
+
+
 const score = drawnNumbers.reduce((acc, curr, i) => {
   if (acc) return acc;
 
-  const bingoIndex = bingoCards.findIndex((card) =>
-    isBingo(card, drawnNumbers.slice(0, i + 1))
-  );
-
-  if (bingoIndex !== -1) {
-    acc =
-      bingoCards[bingoIndex]
+  if(isBingo(bingoCards[losingCardIndex], drawnNumbers.slice(0, i+1))) {
+    
+    return acc =
+      bingoCards[losingCardIndex]
         .flat()
         .filter((d) => !drawnNumbers.slice(0, i + 1).includes(d))
         .reduce((a, c) => a + c, 0) * curr;
   }
 
-  return acc;
 }, null);
 
-console.log(score)
+console.log(score);
 
 console.timeEnd("runtime");
