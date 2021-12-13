@@ -43,9 +43,9 @@ function createGrid(lines) {
   const gridSize = Math.max(maxX, maxY);
 
   let grid = [];
-  for (let i = 0; i < gridSize; i++) {
+  for (let i = 0; i <= gridSize; i++) {
     grid.push([]);
-    for (let j = 0; j < gridSize; j++) {
+    for (let j = 0; j <= gridSize; j++) {
       grid[i].push(0);
     }
   }
@@ -58,16 +58,17 @@ console.log('grid: ', grid.length);
 
 noDiagonals.map((line) => {
   const c = parseLine(line); //c for coordinates
+
   const dir = c.fromY === c.toY ? "X" : "Y";
   const reverse = c.fromY > c.toY || c.fromX > c.toX;
 
   if (reverse) {
-    for (let i = c["to" + dir]; i < c["from" + dir]; i++) {
-      dir === "X" ? grid[c.fromY - 1][i]++ : grid[i][c.fromX - 1]++;
+    for (let i = c["to" + dir]; i <= c["from" + dir]; i++) {
+      dir === "X" ? grid[c.fromY][i]++ : grid[i][c.fromX]++;
     }
   } else {
-    for (let i = c["from" + dir]; i < c["to" + dir]; i++) {
-      dir === "X" ? grid[c.fromY - 1][i]++ : grid[i][c.fromX - 1]++;
+    for (let i = c["from" + dir]; i <= c["to" + dir]; i++) {
+      dir === "X" ? grid[c.fromY][i]++ : grid[i][c.fromX]++;
     }
   }
 });
