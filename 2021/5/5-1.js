@@ -1,9 +1,80 @@
 console.time("runtime");
 const fs = require("fs");
-const input = fs.readFileSync("./input-sample.txt", "utf8").split("\n");
-console.log('input: ', input);
+const input = fs
+  .readFileSync("./input-sample.txt", "utf8")
+  .split("\n")
+  .map((line) => line.match(/(\d,\d)/g));
+
+function parseLine(line) {
+  const [from, to] = line;
+  const [fromX, fromY] = from.split(",").map((d) => parseInt(d));
+  const [toX, toY] = to.split(",").map((d) => parseInt(d));
+
+  return { fromX, fromY, toX, toY };
+}
+
+const noDiagonals = input.filter((line) => {
+    const { fromX, fromY, toX, toY } = parseLine(line);
+    return fromX === toX || fromY === toY;
+});
 
 
-// (\d,\d)
+
+function logGrid(grid) {
+  console.log(
+    grid
+      .map((d) => d.map((i) => (i == 0 ? "." : i)))
+      .map((d) => d.join(" "))
+      .join("\n")
+  );
+}
+
+function createGrid(lines) {
+  const maxX = Math.max(
+    ...lines.map((line) => parseLine(line).fromX),
+    ...lines.map((line) => parseLine(line).toX)
+  );
+
+  const maxY = Math.max(
+    ...lines.map((line) => parseLine(line).fromY),
+    ...lines.map((line) => parseLine(line).toY)
+  );
+
+  const gridSize = Math.max(maxX, maxY);
+
+  let grid = [];
+  for (let i = 0; i < gridSize; i++) {
+    grid.push([]);
+    for (let j = 0; j < gridSize; j++) {
+      grid[i].push(0);
+    }
+  }
+
+  return grid;
+}
+
+let grid = createGrid(noDiagonals);
+console.log('grid: ', grid.length);
+
+noDiagonals.map((line) => {
+  const c = parseLine(line); //c for coordinates
+  const dir = c.fromY === c.toY ? "X" : "Y";
+  const reverse = c.fromY > c.toY || c.fromX > c.toX;
+
+  if (reverse) {
+    for (let i = c["to" + dir]; i < c["from" + dir]; i++) {
+      dir === "X" ? grid[c.fromY - 1][i]++ : grid[i][c.fromX - 1]++;
+    }
+  } else {
+    for (let i = c["from" + dir]; i < c["to" + dir]; i++) {
+      dir === "X" ? grid[c.fromY - 1][i]++ : grid[i][c.fromX - 1]++;
+    }
+  }
+});
+
+logGrid(grid);
+
+// console.log(grid.flat())
+
+// console.log("input: ", input);
 console.timeEnd("runtime");
-
