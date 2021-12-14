@@ -1,7 +1,7 @@
 console.time("runtime");
 const fs = require("fs");
 const input = fs
-  .readFileSync("./input-sample.txt", "utf8")
+  .readFileSync("./input.txt", "utf8")
   .split("\n")
   .map((line) => line.match(/(\d+,\d+)/g));
 
@@ -53,40 +53,32 @@ input.map((line) => {
   const dir = c.fromY === c.toY ? "X" : "Y";
   const reverse = c.fromY > c.toY || c.fromX > c.toX;
 
-  const diagonal = c.fromX !== c.toX && c.fromY !== c.toY
-  
- 
+  const diagonal = c.fromX !== c.toX && c.fromY !== c.toY;
+
   if (diagonal) {
-    //fuck it i'm tired of 'c.fromX'-ing 
+    //fuck it i'm tired of 'c.fromX'-ing
     let { fromX, fromY, toX, toY } = parseLine(line);
-    
+
     const xShouldIncrement = fromX < toX;
     const yShouldIncrement = fromY < toY;
-    
-    
-    console.log('-> ', fromX, fromY, toX, toY);
 
-    while(fromX !== toX) {
-      console.log('fromX, fromY, toX, toY: ', fromX, fromY, toX, toY);
-
-      if(xShouldIncrement) {
-        if(yShouldIncrement) {
+    function work() {
+      if (xShouldIncrement) {
+        if (yShouldIncrement) {
           grid[fromY][fromX]++;
           fromX++;
           fromY++;
-        }
-        else {
+        } else {
           grid[fromY][fromX]++;
           fromX++;
           fromY--;
         }
       } else {
-        if(yShouldIncrement) {
+        if (yShouldIncrement) {
           grid[fromY][fromX]++;
           fromX--;
-          fromY++
-        }
-        else {
+          fromY++;
+        } else {
           grid[fromY][fromX]++;
           fromX--;
           fromY--;
@@ -94,6 +86,10 @@ input.map((line) => {
       }
     }
 
+    while (fromX !== toX) {
+      work();
+    }
+    work();
   } else {
     if (reverse) {
       for (let i = c["to" + dir]; i <= c["from" + dir]; i++) {
@@ -104,18 +100,15 @@ input.map((line) => {
         dir === "X" ? grid[c.fromY][i]++ : grid[i][c.fromX]++;
       }
     }
-    
   }
-  
 });
 
-logGrid(grid)
-
+logGrid(grid);
 
 const deadlySpotsCount = grid.flat().reduce((acc, curr, i) => {
   return curr >= 2 ? ++acc : acc;
 }, 0);
 
-console.log('deadlySpotsCount: ', deadlySpotsCount);
+console.log("deadlySpotsCount: ", deadlySpotsCount);
 
 console.timeEnd("runtime");
