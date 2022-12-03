@@ -21,13 +21,10 @@ function earnedPointsForRound(input: string[]): number {
         switch(targetOutcome) {
             case 'X': //lose
                 return modulo(opponentHandIndex - 1, options.length) + 1
-                break;
             case 'Y': //tie
                 return opponentHandIndex + 1
-                break;
             case 'Z': //win
-                return (opponentHandIndex + 1) % options.length + 1
-                break;
+                return modulo(opponentHandIndex + 1, options.length) + 1
         }
     }
     
