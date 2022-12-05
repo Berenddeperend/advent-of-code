@@ -1,6 +1,6 @@
 {
   "watch": ["*.ts"],
   "ignore": ["src/**/*.spec.ts"],
-  "exec": "ts-node 2022/3/3-2.ts",
+  "exec": "ts-node 2022/4/4-2.ts",
   "ext": "ts"
 }

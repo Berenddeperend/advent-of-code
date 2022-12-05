@@ -20,6 +20,9 @@ function getScoreForGroup(bags: string[]) {
         curr in acc ? acc[curr]++ : acc[curr] = 1;
         return acc;
     }, {});
+
+    console.log(itemMappings)
+
     const badgeItem = Object.entries(itemMappings).find(entry => entry[1] === chunkSize)[0];
 
     return scoreChart.indexOf(badgeItem) + 1;
